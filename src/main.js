@@ -19,8 +19,6 @@ import "./mock/mockServer"
 //引入全部的请求函数
 import * as API from '@/api';
 
-import "swiper/css/swiper.css"
-
 import "@/assets/css/reset.css" //清除默认样式
 
 new Vue({

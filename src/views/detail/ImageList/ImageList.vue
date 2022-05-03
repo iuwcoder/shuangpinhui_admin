@@ -12,6 +12,7 @@
 
 <script>
   import Swiper from 'swiper'
+  import "swiper/css/swiper.css"
 
   export default {
     name: "ImageList",
