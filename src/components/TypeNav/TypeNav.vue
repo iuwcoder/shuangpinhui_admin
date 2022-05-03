@@ -133,7 +133,6 @@ export default {
           } else {
             this.$router.push(location);
           }
-          console.log(location);
         }
       }
     },

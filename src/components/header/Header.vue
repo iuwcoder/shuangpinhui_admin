@@ -6,15 +6,19 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-if="!userName">
             <span>请</span>
-            <a href="###">登录</a>
-            <a href="###" class="register">免费注册</a>
+            <router-link to="/login">登录</router-link>
+            <router-link to="/register" class="register">免费注册</router-link>
+          </p>
+          <p v-else>
+            <a>{{ userName }}</a>
+            <a class="register" @click="logout">退出登录</a>
           </p>
         </div>
         <div class="typeList">
-          <a href="###">我的订单</a>
-          <a href="###">我的购物车</a>
+          <router-link to="/trade">我的订单</router-link>
+          <router-link to="/shopCart">我的购物车</router-link>
           <a href="###">我的尚品汇</a>
           <a href="###">尚品汇会员</a>
           <a href="###">企业采购</a>
@@ -60,6 +64,11 @@ export default {
       query: "",
     };
   },
+  computed: {
+    userName() {
+      return this.$store.state.user.userInfo.name;
+    },
+  },
   methods: {
     toSearch() {
       // 第一种：字符串形式
@@ -78,14 +87,24 @@ export default {
         this.$router.push(location);
       }
     },
+    // 退出登录
+    logout() {
+      this.$store.dispatch('userLogout').then(() => {
+        this.$router.push('/login')
+      })
+    } 
   },
   watch: {
     $route() {
       if (!this.$route.params.keyword) {
-        this.query = ''
+        this.query = "";
       }
-    }
-  }
+    },
+  },
+  mounted() {
+    // 获取用户信息
+    this.$store.dispatch("getUserInfo");
+  },
 };
 </script>
 

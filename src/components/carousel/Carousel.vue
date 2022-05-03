@@ -22,7 +22,6 @@
 <script>
 import Swiper from "swiper";
 
-
 export default {
   name: "Carousel",
   props: ["carouselList"],

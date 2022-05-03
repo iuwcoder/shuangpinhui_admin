@@ -5,9 +5,6 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-// 注册全局事件总线
-Vue.prototype.$bus = new Vue()
-
 // 三级联动组件 -- 全局组件
 // import TypeNav from '@/components/TypeNav/TypeNav.vue'
 
@@ -29,5 +26,10 @@ import "@/assets/css/reset.css" //清除默认样式
 new Vue({
   router,
   store,
+  beforeCreate() {
+    // 注册全局事件总线
+    Vue.prototype.$bus = new Vue()
+    Vue.prototype.$API = API
+  },
   render: h => h(App)
 }).$mount('#app')

@@ -32,3 +32,39 @@ export const reqDeleteCart = (skuId) => request.delete(`/cart/deleteCart/${skuId
 
 // 切换商品选中状态
 export const reqUpdateChecked = (skuId, isChecked) => request.get(`/cart/checkCart/${skuId}/${isChecked}`)
+
+// 获取验证码
+export const reqCode = (phone) => request(`/user/passport/sendCode/${phone}`)
+
+// 注册
+export const reqRegister = (data) => request.post('/user/passport/register', data)
+
+// 登录
+export const reqLogin = (data) => request.post('/user/passport/login', data)
+
+// 获取用户信息 发送token
+export const reqUserInfo = () => request.get('/user/passport/auth/getUserInfo')
+
+// 退出登录
+export const reqLogout = () => request.get('/user/passport/logout')
+
+// 获取用户地址信息 13700000000 111111
+export const reqAddressInfo = () => request.get('/user/userAddress/auth/findUserAddressList')
+
+// 获取用户订单交易信息
+export const reqOrderInfo = () => request.get('/order/auth/trade')
+
+// 提交订单
+export const reqSubmitOrder = (tradeNo, data) => request.post(`/order/auth/submitOrder?tradeNo=${tradeNo}`, data)
+
+// 获取订单支付信息 /api/payment/weixin/createNative/{orderId}
+export const reqPayInfo = (orderId) => request.get(`/payment/weixin/createNative/${orderId}`)
+
+
+
+
+
+
+
+
+

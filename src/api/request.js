@@ -3,7 +3,7 @@ import axios from "axios"
 import nprogress from "nprogress"
 import "nprogress/nprogress.css"
 
-import store from '../store/index'
+import store from '@/store'
 
 // 创建axios实例
 const instance = axios.create({
@@ -20,6 +20,11 @@ instance.interceptors.request.use((config) => {
     // 请求头添加一个字段(userTempId)，和后台商量好的
     config.headers.userTempId = store.state.detail.uuid_token;
   }
+  // 需要携带token
+  if(store.state.user.token) {
+    config.headers.token = store.state.user.token;
+  }
+
   // 进度条开始动
   nprogress.start()
   return config

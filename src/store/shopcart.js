@@ -44,10 +44,8 @@ const actions = {
 
   // 修改产品全部选中状态
   updateAllChecked({dispatch, state}, isChecked) {
-    console.log(isChecked);
     let promiseAll = []
     state.cartList[0].cartInfoList.forEach(item => {
-      console.log(item);
       let promise =  dispatch('updateChecked', {skuId: item.skuId, isChecked})
       promiseAll.push(promise)
     })
