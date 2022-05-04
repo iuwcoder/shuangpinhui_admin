@@ -11,10 +11,9 @@ const mutations = {
 }
 
 const actions = {
-  async getSearchList({commit}, params={}) {
+  async getSearchList({commit}, params) {
     // params，是当用户派发action的时候，第二个参数传递过来的，至少是一个空对象
     let result = await reqSearchInfo(params)
-    console.log(result);
       if (result.code === 200) {
         commit('SEARCHLIST', result.data)
       }

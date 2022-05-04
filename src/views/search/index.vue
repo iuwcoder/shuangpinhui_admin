@@ -139,11 +139,11 @@ export default {
         category3Id: "", // 三级分类ID
         categoryName: "", // 分类名称
         keyword: "", // 搜索关键字
-        props: "", // 商品属性的数组
+        props: [], // 商品属性的数组
         trademark: "", // 品牌: "品牌ID:品牌名称"
         order: "1:desc", // 排序方式  1: 综合,2: 价格 asc: 升序,desc: 降序
         pageNo: 1, // 页码
-        pageSize: 10, // 每页数量
+        pageSize: 5, // 每页数量
       },
     };
   },
@@ -172,14 +172,14 @@ export default {
     },
     // 发送请求
     getSearch() {
-      this.$store.dispatch("getSearchList");
+      this.$store.dispatch("getSearchList", this.searchParams);
     },
 
     // 删除面包屑中的分类名字
     removeCategoryName() {
       // 清空数据
       this.searchParams.categoryName = "";
-      this.clearParams();
+      // this.clearParams();
       //清除路由当中的query参数，如果存在params参数应该带着，不应该删除
       if (this.$route.params) {
         this.$router.push({ name: "search", params: this.$route.params });
@@ -196,7 +196,7 @@ export default {
     },
 
     // 品牌属性
-    trademarkInfo() {
+    trademarkInfo(trademark) {
       // 品牌: "品牌ID:品牌名称"
       this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
       this.getSearch();
@@ -247,7 +247,6 @@ export default {
     getPageNo(pageNo) {
       this.searchParams.pageNo = pageNo;
       this.getSearch();
-      console.log(this.searchParams);
     },
 
     // 清空路由参数
@@ -260,12 +259,12 @@ export default {
 
   watch: {
     // 只要路由发生变化，立即在向服务器发请求
-    $route(newValue, oldValue) {
+    $route() {
+      //清除上一次发请求的id，用undefined就不会向服务器发送这个参数请求
+      this.clearParams();
       //先收集最新的搜索条件（再次整理参数），再向服务器发请求
       Object.assign(this.searchParams, this.$route.query, this.$route.params);
       this.getSearch();
-      //清除上一次发请求的id，用undefined就不会向服务器发送这个参数请求
-      this.clearParams();
     },
   },
 

@@ -16,6 +16,7 @@
             <input
               type="checkbox"
               name="chk_list"
+              v-model="cart.isChecked"
               @change="updateChecked(cart, $event)"
             />
           </li>
@@ -71,7 +72,7 @@
         <input
           class="chooseAll"
           type="checkbox"
-          :checked="isAllCheck && cartInfoList.length > 0"
+          :checked="isAllCheck"
           @change="updateCheckedAll"
         />
         <span>全选</span>
@@ -82,7 +83,7 @@
         <a href="#">清除下柜商品</a>
       </div>
       <div class="money-box">
-        <div class="chosed">已选择 <span>0</span>件商品</div>
+        <div class="chosed">已选择 <span>{{calcCount}}</span>件商品</div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
           <i class="summoney">{{ totalPrice }}</i>
@@ -109,19 +110,38 @@ export default {
     },
     // 计算总价
     totalPrice() {
-      let sum = 0;
-      this.cartInfoList.forEach((item) => {
-        sum += item.skuNum * item.skuPrice;
-      });
-      return sum;
+      return this.cartInfoList
+        .filter((item) => {
+          return item.isChecked;
+        })
+        .reduce((pre, item) => {
+          return pre + item.skuNum * item.skuPrice;
+        }, 0);
+      // let sum = 0;
+      // this.cartInfoList.forEach((item) => {
+      //   sum += item.skuNum * item.skuPrice;
+      // });
+      // return sum;
       // let res = this.getcartInfoList.filter(item => {return item.isChecked === 1}).map(item =>
-      // {return item.skuNum * item.skuPrice}).reduce((pre,cur) => {return pre + cur}) return res
+      // {return item.skuNum * item.skuPrice}).reduce((pre,cur) => {return pre + cur})
+      // return res
 
       // let sum = this.cartInfoList.filter(item =>{})
     },
+
+    // 结算数量
+    calcCount() {
+      return this.cartInfoList.filter((item) => item.isChecked).length;
+    },
+
     // 全选
     isAllCheck() {
-      return this.cartInfoList.every((item) => item.isChecked == 1);
+      //遍历数组里面的每一个元素（产品）：如果每一个产品的isChecked属性都为1->勾上
+      //如果有一个产品isChecked属性为零，底下计算返回的是布尔值false->不够选上
+      return (
+        this.cartInfoList.every((item) => item.isChecked == 1) &&
+        this.cartInfoList.length > 0
+      );
     },
   },
   methods: {
@@ -168,7 +188,18 @@ export default {
         await this.$store.dispatch("deleteAllChecked");
         this.getData();
       } catch (error) {
-        alert('删除失败');
+        alert("删除失败");
+      }
+    },
+
+    // 全选
+    updateCheckedAll(event) {
+      let isChecked = event.target.checked ? "1" : "0";
+      try {
+        this.$store.dispatch("updateAllChecked", isChecked);
+        this.getData();
+      } catch (error) {
+        alert("修改失败");
       }
     },
 
@@ -181,17 +212,6 @@ export default {
         .then(() => {
           this.getData();
         });
-    },
-
-    // 全选
-    updateCheckedAll(event) {
-      let isChecked = event.target.checked ? "1" : "0";
-      try {
-        this.$store.dispatch("updateAllChecked", isChecked);
-        this.getData();
-      } catch (error) {
-        alert('修改失败');
-      }
     },
   },
   mounted() {
