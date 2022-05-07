@@ -79,7 +79,8 @@
       login() {
         const {phone, password} = this
         phone && password && this.$store.dispatch('userLogin', {phone, password}).then(() => {
-          this.$router.push('/home')
+          let toPath = this.$route.query.redirect || '/home'
+          this.$router.push(toPath)
         })
       }
     }

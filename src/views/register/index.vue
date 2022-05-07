@@ -10,29 +10,64 @@
       </h3>
       <div class="content">
         <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号" v-model="phone"/>
-        <span class="error-msg">错误提示信息</span>
+        <input
+          type="text"
+          placeholder="请输入你的手机号"
+          v-model="phone"
+          name="phone"
+          v-validate="{ required: true, regex: /^1\d{10}$/ }"
+          :class="{ invalid: errors.has('phone') }"
+        />
+        <span class="error-msg">{{ errors.first("phone") }}</span>
       </div>
       <div class="content">
         <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码"  v-model="code"/>
+        <input
+          type="text"
+          placeholder="请输入验证码"
+          v-model="code"
+          name="code"
+          v-validate="{ required: true, regex: /^\d{6}$/ }"
+          :class="{ invalid: errors.has('code') }"
+        />
         <button class="msg" @click="getCode">获取验证码</button>
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg">{{ errors.first("code") }}</span>
       </div>
       <div class="content">
         <label>登录密码:</label>
-        <input type="password" placeholder="请输入你的登录密码" v-model="password"/>
-        <span class="error-msg">错误提示信息</span>
+        <input
+          type="password"
+          placeholder="请输入你的登录密码"
+          v-model="password"
+          name="password"
+          v-validate="{ required: true, regex: /^[0-9A-Za-z]{8,20}$/ }"
+          :class="{ invalid: errors.has('password') }"
+        />
+        <span class="error-msg">{{ errors.first("password") }}</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input type="password" placeholder="请输入确认密码" v-model="password1"/>
-        <span class="error-msg">错误提示信息</span>
+        <input
+          type="password"
+          placeholder="请输入确认密码"
+          v-model="password1"
+          name="password1"
+          v-validate="{ required: true, is: password }"
+          :class="{ invalid: errors.has('password1') }"
+        />
+        <span class="error-msg">{{ errors.first("password1") }}</span>
       </div>
       <div class="controls">
-        <input name="m1" type="checkbox" :checked="isAgree"/>
+        <input
+          type="checkbox"
+          placeholder="请输入确认密码"
+          v-model="agree"
+          name="agree"
+          v-validate="{ required: true, agree: true }"
+          :class="{ invalid: errors.has('agree') }"
+        />
         <span>同意协议并注册《尚品汇用户协议》</span>
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg">{{ errors.first("agree") }}</span>
       </div>
       <div class="btn">
         <button @click="register">完成注册</button>
@@ -62,30 +97,40 @@ export default {
   name: "Register",
   data() {
     return {
-      phone: '', // 手机号 
-      code: '', // 验证码
-      password: '', // 密码
-      password1: '', // 确认密码
-      isAgree: true // 是否同意
-    }
+      phone: "", // 手机号
+      code: "", // 验证码
+      password: "", // 密码
+      password1: "", // 确认密码
+      agree: true, // 是否同意
+    };
   },
   methods: {
     // 获取验证码
     getCode() {
-      const {phone} = this
-      phone && this.$store.dispatch('getCode', phone).then(() => {
-        this.code = this.$store.state.user.code
-      })
+      const { phone } = this;
+      phone &&
+        this.$store.dispatch("getCode", phone).then(() => {
+          this.code = this.$store.state.user.code;
+        });
     },
 
     // 注册
-    register() {
-      const {phone, code, password, password1} = this
-      phone && code && password && password1 && this.$store.dispatch('userRegister', {phone, code, password}).then(() => {
-        this.$router.push('/login');
-      })
-    }
-  }
+    async register() {
+      //这里是vee-valadiate提供的一个方法，如果表单验证全部成功，返回布尔值真，
+      //如有有一个字段验证失败，返回布尔值false
+      const success = await this.$validator.validateAll();
+      const { phone, code, password, password1 } = this;
+      if (success) {
+        this.$store
+          .dispatch("userRegister", { phone, code, password })
+          .then(() => {
+            this.$router.push("/login");
+          });
+      } else {
+        alert('格式错误！')
+      }
+    },
+  },
 };
 </script>
 
